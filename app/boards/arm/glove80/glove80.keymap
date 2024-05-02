@@ -263,6 +263,10 @@
 #define POS_RH_C6R5 63
 #define POS_RH_C6R6 79
 
+&sl {
+    release-after-ms = <2000>;
+};
+
 /* Custom Defined Behaviors */
 / {
     behaviors {
