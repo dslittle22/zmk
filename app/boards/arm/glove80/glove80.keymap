@@ -265,7 +265,7 @@
 
 &sl {
     release-after-ms = <2000>;
-};zzzzzzz
+};
 
 /* Custom Defined Behaviors */
 / {
@@ -423,7 +423,7 @@
             bindings = <
  &trans      &trans      &trans      &trans      &trans                                                                               &trans        &trans         &trans        &trans  &trans
  &trans      &trans      &trans      &trans      &trans         &trans                                                  &trans        &trans        &trans         &trans        &trans  &trans
- &trans      &trans      &trans      &trans      &trans         &trans                                                  &trans  &kp LS(LBKT)  &kp LS(RBKT)    &kp LS(SQT)       &kp SQT  &trans
+ &trans      &trans      &trans      &trans      &trans         &trans                                                  &trans  &kp LS(LBKT)  &kp LS(RBKT)        &kp DQT       &kp SQT  &trans
  &trans  &kp LS(N5)  &kp LS(N6)  &kp LS(N7)  &kp LS(N8)  &kp LS(GRAVE)                                                  &trans      &kp LPAR      &kp RPAR  &kp LS(MINUS)     &kp EQUAL  &trans
  &trans  &kp LS(N1)  &kp LS(N2)  &kp LS(N3)  &kp LS(N4)      &kp GRAVE  &trans  &trans  &trans  &trans  &trans  &trans  &trans      &kp LBKT      &kp RBKT      &kp MINUS  &kp LS(PLUS)  &trans
  &trans      &trans      &trans      &trans      &trans                 &trans  &trans  &trans  &trans  &trans  &trans                &trans        &trans         &trans        &trans  &trans
