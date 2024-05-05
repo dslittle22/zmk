@@ -344,6 +344,28 @@
         bindings = <&kp>, <&kp>;
     };
 
+    mmt_l: my_mod_tap_left {
+        compatible = "zmk,behavior-hold-tap";
+        flavor = "balanced";
+        hold-trigger-key-positions = <RIGHT_HAND_KEYS>;
+        tapping-term-ms = <225>; // ms for same-hand HRM to work
+        quick-tap-ms = <400>; // ms for tap key to start repeating
+        require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
+        #binding-cells = <2>;
+        bindings = <&mo>, <&kp>;
+    };
+
+    mmt_r: my_mod_tap_right {
+        compatible = "zmk,behavior-hold-tap";
+        flavor = "balanced";
+        hold-trigger-key-positions = <LEFT_HAND_KEYS>;
+        tapping-term-ms = <225>; // ms for same-hand HRM to work
+        quick-tap-ms = <400>; // ms for tap key to start repeating
+        require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
+        #binding-cells = <2>;
+        bindings = <&mo>, <&kp>;
+    };
+
     sym_ht: sym_hold_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -386,6 +408,58 @@
             bindings = <&qw_sct>, <&kp>;
      };
 
+    m_f1: media_f1_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_BRI_DN>, <&kp F1>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+    m_f2: media_f2_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_BRI_UP>, <&kp F2>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+
+    m_f6: media_f6_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_REWIND>, <&kp F6>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+
+    m_f7: media_f7_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_PLAY_PAUSE>, <&kp F7>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+
+    m_f8: media_f8_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_FAST_FORWARD>, <&kp F8>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+
+    m_f9: media_f9_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_VOLUME_DOWN>, <&kp F9>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+    m_f10: media_f10_key {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp C_VOLUME_UP>, <&kp F10>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
 };
 
     combos {
@@ -429,10 +503,10 @@
 
         L_B {
             bindings = <
-&kp F1                  &kp F2         &kp F3         &kp F4          &kp F5                                                                                                                      &kp F6        &kp F7         &kp F8             &kp F9    &kp F10
+&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                      &m_f6        &m_f7         &m_f8             &m_f9    &m_f10
 &kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                              &kp N6          &kp N7        &kp N8         &kp N9             &kp N0  &kp MINUS
 &mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                               &kp Y           &kp U         &kp I          &kp O              &kp P  &kp EQUAL
-&lt 3 ESC       &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                               &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
+&lt L_A ESC     &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                               &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
 &fancy_shift LSHFT 0     &kp Z          &kp X          &kp C           &kp V   &kp B    &sym_ht L_S L_S     &kp LCTRL        &lower       &kp LGUI  &kp RCTRL  &sym_ht L_S L_S     &kp N           &kp M     &kp COMMA        &kp DOT           &kp FSLH   &kp BSLH
 &magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END                   &kp BSPC  &kp LA(BSPC)  &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &kp SPACE                        &kp LEFT      &kp DOWN         &kp UP          &kp RIGHT     &l_tog
             >;
