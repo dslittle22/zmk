@@ -23,14 +23,14 @@
 /* Automatically generated layer name #define */
 #define L_B 0
 #define L_C 1
-#define L_L 2
+#define L_N 2
 #define L_M 3
 #define L_A 4
 #define L_S 5
 
 /* To deal with the situation where there is no Lower layer, to keep &lower happy */
-#ifndef L_L
-#define L_L 0
+#ifndef L_N
+#define L_N 0
 #endif
 
 /* Custom Device-tree */
@@ -47,7 +47,7 @@
             label = "LAYER_TAP_DANCE";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
-            bindings = <&mo L_L>, <&to L_L>;
+            bindings = <&mo L_N>, <&to L_N>;
         };
     };
 };
@@ -274,7 +274,7 @@
 / {
     behaviors {
 
-    fancy_shift: fancy_shift {
+    f_shft: fancy_shift {
         compatible = "zmk,behavior-hold-tap";
         #binding-cells = <2>;
         tapping_term_ms = <300>;
@@ -366,12 +366,20 @@
         bindings = <&mo>, <&kp>;
     };
 
-    sym_ht: sym_hold_tap {
+    mo_st: mo_sticky_layer {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <200>;
             bindings = <&mo>, <&sl>;
+    };
+
+    mo_tog: mo_toggle_layer {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&tog>;
     };
 
     l_tog: tap_dance_key_layer_toggle {
@@ -407,6 +415,22 @@
             hold-trigger-on-release; // wait for other home row mods
             bindings = <&qw_sct>, <&kp>;
      };
+
+    esc_fq_mm: escape_force_quit_mod_morph {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp ESC>, <&kp LG(LA(ESC))>;
+        mods = <(MOD_LGUI|MOD_RGUI)>;
+    };
+
+    esc_fq: escape_force_quit_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&esc_fq_mm>;
+    };
+
 
     m_f1: media_f1_key {
         compatible = "zmk,behavior-mod-morph";
@@ -501,18 +525,18 @@
     keymap {
         compatible = "zmk,keymap";
 
-        L_B {
+        Layer_Base {
             bindings = <
-&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                      &m_f6        &m_f7         &m_f8             &m_f9    &m_f10
-&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                              &kp N6          &kp N7        &kp N8         &kp N9             &kp N0  &kp MINUS
-&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                               &kp Y           &kp U         &kp I          &kp O              &kp P  &kp EQUAL
-&lt L_A ESC     &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                               &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
-&fancy_shift LSHFT 0     &kp Z          &kp X          &kp C           &kp V   &kp B    &sym_ht L_S L_S     &kp LCTRL        &lower       &kp LGUI  &kp RCTRL  &sym_ht L_S L_S     &kp N           &kp M     &kp COMMA        &kp DOT           &kp FSLH   &kp BSLH
-&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END                   &kp BSPC  &kp LA(BSPC)  &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &kp SPACE                        &kp LEFT      &kp DOWN         &kp UP          &kp RIGHT     &l_tog
+&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                        &m_f6         &m_f7          &m_f8              &m_f9     &m_f10
+&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                               &kp N6          &kp N7        &kp N8         &kp N9             &kp N0  &kp MINUS
+&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                &kp Y           &kp U         &kp I          &kp O              &kp P  &kp EQUAL
+&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
+&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B    &mo_tog L_N L_N     &kp LCTRL        &lower       &kp LGUI  &kp RCTRL      &kp LG(SPACE)     &kp N           &kp M     &kp COMMA        &kp DOT           &kp FSLH   &kp BSLH
+&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END            &mmt_l L_S BSPC  &kp LA(BSPC)  &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_S SPACE                  &kp LEFT      &kp DOWN         &kp UP          &kp RIGHT     &l_tog
             >;
         };
 
-        L_C {
+        Layer_Colemak {
             bindings = <
  &trans          &trans         &trans         &trans           &trans                                                                            &trans         &trans         &trans          &trans  &trans
  &trans          &trans         &trans         &trans           &trans  &trans                                                    &trans          &trans         &trans         &trans          &trans  &trans
@@ -523,18 +547,18 @@
             >;
         };
 
-        L_L {
+        Layer_Number {
             bindings = <
-         &kp C_BRI_DN  &kp C_BRI_UP      &kp C_PREV      &kp C_NEXT         &kp C_PP                                                                                    &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP            &none  &kp PAUSE_BREAK
-               &trans         &none           &none           &none            &none   &kp HOME                                                   &kp LEFT_PARENTHESIS  &kp KP_NUM  &kp KP_EQUAL  &kp KP_SLASH  &kp KP_MULTIPLY  &kp PRINTSCREEN
-               &trans         &none           &none    &kp UP_ARROW            &none    &kp END                                                  &kp RIGHT_PARENTHESIS   &kp KP_N7     &kp KP_N8     &kp KP_N9     &kp KP_MINUS   &kp SCROLLLOCK
-               &trans         &none  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp PG_UP                                                            &kp PERCENT   &kp KP_N4     &kp KP_N5     &kp KP_N6      &kp KP_PLUS            &none
-               &trans     &kp K_APP           &none         &kp F11          &kp F12  &kp PG_DN  &trans  &trans   &to 0  &trans  &trans  &trans              &kp COMMA   &kp KP_N1     &kp KP_N2     &kp KP_N3     &kp KP_ENTER           &trans
- &magic L_M 0      &kp CAPS         &kp INS         &kp F11          &kp F12             &trans  &trans  &trans  &trans  &trans  &trans                          &kp KP_N0     &kp KP_N0    &kp KP_DOT     &kp KP_ENTER           &trans
+&trans         &trans     &trans  &trans  &trans                                                                          &trans           &trans         &trans          &kp F11   &kp F12
+&trans         &trans     &trans  &trans  &trans  &trans                                                          &trans &kp KP_NUM  &kp KP_EQUAL  &kp KP_SLASH  &kp KP_MULTIPLY    &trans
+&trans         &trans     &trans  &trans  &trans  &trans                                                          &trans  &kp KP_N7     &kp KP_N8     &kp KP_N9     &kp KP_MINUS    &trans
+&trans         &trans     &trans  &trans  &trans  &trans                                                     &kp PERCENT  &kp KP_N4     &kp KP_N5     &kp KP_N6      &kp KP_PLUS    &trans
+&trans         &trans     &trans  &trans  &trans  &trans  &trans  &trans  &to L_B  &trans  &trans  &trans      &kp COMMA  &kp KP_N1     &kp KP_N2     &kp KP_N3           &trans    &trans
+&magic L_M 0   &trans     &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans                 &kp KP_N0     &kp KP_N0    &kp KP_DOT     &kp KP_ENTER    &trans
             >;
         };
 
-        L_M {
+        Layer_Magic {
             bindings = <
   &bt BT_CLR            &none            &none            &none            &none                                                                                  &none   &none   &none   &none  &bt BT_CLR_ALL
        &none            &none            &none            &none            &none            &none                                                         &none   &none   &none   &none   &none           &none
@@ -545,7 +569,7 @@
             >;
         };
 
-        L_A {
+        Layer_Arrows {
             bindings = <
  &trans     &trans    &trans    &trans  &trans                                                                              &trans      &trans         &trans  &trans   &trans
  &trans     &trans    &trans    &trans  &trans  &trans                                                        &trans        &trans      &trans         &trans  &trans   &trans
@@ -556,7 +580,7 @@
             >;
         };
 
-        L_S {
+        Layer_Symbols {
             bindings = <
  &trans      &trans      &trans      &trans      &trans                                                                               &trans        &trans         &trans        &trans  &trans
  &trans      &trans      &trans      &trans      &trans         &trans                                                  &trans        &trans        &trans         &trans        &trans  &trans
