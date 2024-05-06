@@ -23,10 +23,22 @@
 /* Automatically generated layer name #define */
 #define L_B 0
 #define L_C 1
-#define L_N 2
-#define L_M 3
+#define L_SL 2
+#define L_SR 3
 #define L_A 4
-#define L_S 5
+#define L_N 5
+#define L_M 6
+#define L_SL_T 7
+#define L_SL_L 8
+#define L_SR_T 9
+#define L_SR_L 10
+
+/*
+ * The order of layers matters here- if we have 'base-like' layer (e.g. colemak) is above the
+ * layer we want to go into (e.g. symbol), the base must be lower because they all stack.
+ * This also means that we want magic to be (near) last.
+ */
+
 
 /* To deal with the situation where there is no Lower layer, to keep &lower happy */
 #ifndef L_N
@@ -320,10 +332,19 @@
                          70 53     56 73                 \
                           71 54   55 72
 
+
+/*
+ * hold-tap behaviors:
+ * - hold-preferred: triggers hold behavior when tapping term is up or another key is pressed
+ * - tap-preferred: triggers the hold behavior when tapping term is up, otherwise tap always
+ * - balanced: hold behavior when tapping term is up or another key is pressed and released while key held down
+ * - tap-unless-interrupted: hold if another key is pressed before tapping term is up, otherwise tap
+ */
+
     l_hrm: left_hrm {
         compatible = "zmk,behavior-hold-tap";
         flavor = "balanced"; // produces a "hold" if another key is pressed and released within the tapping-term
-        hold-trigger-key-positions = <RIGHT_HAND_KEYS THUMB_KEYS>;
+        hold-trigger-key-positions = <RIGHT_HAND_KEYS THUMB_KEYS>; // if a key not in the list is pressed before tapping term, it's a tap
         hold-trigger-on-release; // wait for other home row mods
         tapping-term-ms = <225>; // ms for same-hand HRM to work
         quick-tap-ms = <400>; // ms for tap key to start repeating
@@ -345,27 +366,42 @@
     };
 
     mmt_l: my_mod_tap_left {
+        // generic mod tap for left hand
         compatible = "zmk,behavior-hold-tap";
         flavor = "balanced";
         hold-trigger-key-positions = <RIGHT_HAND_KEYS>;
         tapping-term-ms = <225>; // ms for same-hand HRM to work
-        quick-tap-ms = <400>; // ms for tap key to start repeating
+        quick-tap-ms = <175>; // ms for tap key to start repeating
         require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
         #binding-cells = <2>;
         bindings = <&mo>, <&kp>;
     };
 
+    mmt_l_bsd: my_mod_tap_left_backspace_shift_delete {
+        // generic mod tap for left hand
+        compatible = "zmk,behavior-hold-tap";
+        flavor = "balanced";
+        hold-trigger-key-positions = <RIGHT_HAND_KEYS>;
+        tapping-term-ms = <225>; // ms for same-hand HRM to work
+        quick-tap-ms = <175>; // ms for tap key to start repeating
+        require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
+        #binding-cells = <2>;
+        bindings = <&mo>, <&bcksp_del>;
+    };
+
     mmt_r: my_mod_tap_right {
+        // generic mod tap for right hand
         compatible = "zmk,behavior-hold-tap";
         flavor = "balanced";
         hold-trigger-key-positions = <LEFT_HAND_KEYS>;
         tapping-term-ms = <225>; // ms for same-hand HRM to work
-        quick-tap-ms = <400>; // ms for tap key to start repeating
+        quick-tap-ms = <175>; // ms for tap key to start repeating
         require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
         #binding-cells = <2>;
         bindings = <&mo>, <&kp>;
     };
 
+    // &mo to layer on hold, sticky layer on tap
     mo_st: mo_sticky_layer {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -374,6 +410,7 @@
             bindings = <&mo>, <&sl>;
     };
 
+    // &mo to layer on hold, toggle layer on tap
     mo_tog: mo_toggle_layer {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -382,6 +419,7 @@
             bindings = <&mo>, <&tog>;
     };
 
+    // this is a key that outputs § on tap, toggle colemak layer on double
     l_tog: tap_dance_key_layer_toggle {
             compatible = "zmk,behavior-tap-dance";
             label = "LAYER_TAP_DANCE_TOGGLE";
@@ -390,6 +428,7 @@
             bindings = <&kp LA(N6)>, <&tog L_C>;
      };
 
+    // this is basically just a hrm, but the hold binding is the qw_sct macro
     h_q_l: hrm_to_qwerty_layer_left {
             compatible = "zmk,behavior-hold-tap";
             hold-trigger-key-positions = <RIGHT_HAND_KEYS THUMB_KEYS>;
@@ -431,6 +470,12 @@
             bindings = <&mo>, <&esc_fq_mm>;
     };
 
+    bcksp_del: backspace_delete_on_shift {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp BSPC>, <&kp DEL>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
 
     m_f1: media_f1_key {
         compatible = "zmk,behavior-mod-morph";
@@ -500,6 +545,12 @@
 /* Automatically generated macro definitions */
 / {
     macros {
+    // this is kind of advanced. It's saying;
+    // 1. key press the binding param (a HRM)
+    // 2. toggle (off) the colemak layer
+    // -- stay in this state while macro key is held, and on release:
+    // 3. release the HRM key
+    // 4. re-toggle colemak layer
         qw_sct: qwerty_layer_shortcut {
             label = "BT_0";
             compatible = "zmk,behavior-macro-one-param";
@@ -520,6 +571,29 @@
     };
 };
 
+/ {
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        left_symbol_temp {
+            if-layers = <L_SL_T>;
+            then-layer = <L_SL>;
+        };
+        left_symbol_lock {
+            if-layers = <L_SL_L>;
+            then-layer = <L_SL>;
+        };
+
+        right_symbol_temp {
+            if-layers = <L_SR_T>;
+            then-layer = <L_SR>;
+        };
+        right_symbol_lock {
+            if-layers = <L_SR_L>;
+            then-layer = <L_SR>;
+        };
+    };
+};
+
 /* Automatically generated keymap */
 / {
     keymap {
@@ -527,12 +601,12 @@
 
         Layer_Base {
             bindings = <
-&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                        &m_f6         &m_f7          &m_f8              &m_f9     &m_f10
-&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                               &kp N6          &kp N7        &kp N8         &kp N9             &kp N0  &kp MINUS
-&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                &kp Y           &kp U         &kp I          &kp O              &kp P  &kp EQUAL
-&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
-&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B    &mo_tog L_N L_N     &kp LCTRL        &lower       &kp LGUI  &kp RCTRL      &kp LG(SPACE)     &kp N           &kp M     &kp COMMA        &kp DOT           &kp FSLH   &kp BSLH
-&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END            &mmt_l L_S BSPC  &kp LA(BSPC)  &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_S SPACE                  &kp LEFT      &kp DOWN         &kp UP          &kp RIGHT     &l_tog
+&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                                    &m_f6         &m_f7          &m_f8              &m_f9     &m_f10
+&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                                           &kp N6          &kp N7        &kp N8         &kp N9             &kp N0  &kp MINUS
+&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                            &kp Y           &kp U         &kp I          &kp O              &kp P  &kp EQUAL
+&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                            &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
+&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B       &mmt_l L_A  TAB  &mmt_l L_N GRAVE  &mo_tog L_N L_N       &kp LGUI  &kp RCTRL        &kp LG(SPACE)    &kp N           &kp M     &kp COMMA        &kp DOT           &kp FSLH   &kp BSLH
+&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END           &mmt_l_bsd L_SR_T 0      &kp LA(BSPC)     &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_SL_T SPACE                 &kp LEFT      &kp DOWN         &kp UP          &kp RIGHT     &l_tog
             >;
         };
 
@@ -541,15 +615,48 @@
  &trans          &trans         &trans         &trans           &trans                                                                            &trans         &trans         &trans          &trans  &trans
  &trans          &trans         &trans         &trans           &trans  &trans                                                    &trans          &trans         &trans         &trans          &trans  &trans
  &trans           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &kp SEMI  &trans
- &trans  &h_q_l LCTRL A  &h_q_l LALT R  &h_q_l LGUI S  &h_q_l LSHFT T   &kp G                                                      &kp M  &h_q_r LSHFT N  &h_q_r LGUI E  &h_q_r LALT I  &h_q_r LCTRL O  &trans
+ &trans  &h_q_l LCTRL A  &h_q_l LALT R  &h_q_l LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm LSHFT N  &h_q_r LGUI E  &h_q_r LALT I  &h_q_r LCTRL O  &trans
  &trans          &trans         &trans         &trans           &kp D   &kp V    &trans  &trans  &trans  &trans  &trans  &trans    &kp K           &kp H      &kp COMMA        &kp DOT        &kp FSLH  &trans
  &trans          &trans         &trans         &trans           &trans           &trans  &trans  &trans  &trans  &trans  &trans                   &trans         &trans         &trans          &trans  &trans
             >;
         };
 
+        Layer_Symbols_Left {
+            bindings = <
+ &trans               &trans      &trans         &trans       &trans                                                                                   &trans        &trans        &trans     &trans  &trans
+ &trans               &trans      &trans         &trans       &trans  &trans                                                             &trans        &trans        &trans        &trans     &trans  &trans
+ &kp LS(N6)       &kp LS(N2)  &kp LS(N3)  &kp LS(MINUS)   &kp LS(N4)  &kp LS(N8)                                                         &trans        &trans        &trans        &trans     &trans  &trans
+ &kp LS(N7)       &kp LS(N1)   &kp GRAVE        &kp SQT      &kp DQT  &kp LS(BSLH)                                                       &trans      &kp RSFT      &kp RGUI      &kp RALT  &kp RCTRL  &trans
+ &kp LS(BSLH)  &kp LS(COMMA)   &kp MINUS      &kp EQUAL  &kp LS(DOT)  &kp BSLH       &trans  &kp SPACE  &trans  &trans  &trans  &trans   &trans   &tog L_SL_L   &tog L_SR_L      &kp SPACE    &trans  &trans
+ &trans        &kp LS(GRAVE)  &kp LS(N5)       &kp PLUS     &kp FSLH                &to L_B     &trans  &trans  &trans  &trans  &to L_B                &trans        &trans         &trans    &trans  &trans
+            >;
+        };
+
+        Layer_Symbols_Right{
+            bindings = <
+ &trans     &trans    &trans    &trans      &trans                                                                              &trans       &trans         &trans         &trans   &trans
+ &trans     &trans    &trans    &trans      &trans   &trans                                                       &trans        &trans       &trans         &trans         &trans   &trans
+ &trans     &trans    &trans    &trans      &trans   &trans                                                       &trans  &kp LS(LBKT)  &kp LS(RBKT)     &kp LG(Z)  &kp LG(LS(Z))   &trans
+ &trans  &kp LCTRL  &kp LALT   &kp LGUI  &kp LSHFT   &trans                                                       &trans      &kp LPAR      &kp RPAR  &kp LS(SEMI)       &kp SEMI   &trans
+ &trans     &trans  &kp BSPC   &tog L_SL_L   &tog L_SR_L      &trans  &trans  &trans  &trans  &trans  &trans      &trans        &trans      &kp LBKT      &kp RBKT      &kp SPACE   &trans
+ &trans     &trans    &trans    &trans      &trans           &to L_B  &trans  &trans  &trans  &trans  &to L_B                   &trans        &trans        &trans         &trans   &trans
+            >;
+        };
+
+          Layer_Arrows {
+            bindings = <
+ &trans     &trans    &trans    &trans     &trans                                                                               &trans        &trans      &trans        &trans   &trans
+ &trans     &trans    &trans    &trans     &trans    &trans                                                       &trans        &trans        &trans      &trans        &trans   &trans
+ &trans     &trans    &trans    &trans     &trans    &trans                                                    &kp LG(X)  &kp LA(LEFT)  &kp LA(DOWN)  &kp LA(UP) &kp LA(RIGHT)   &trans
+ &trans  &kp LCTRL  &kp LALT  &kp LGUI  &kp LSHFT    &trans                                                    &kp LG(C)      &kp LEFT      &kp DOWN      &kp UP     &kp RIGHT   &trans
+ &trans     &trans    &trans    &trans     &trans    &trans  &trans  &trans  &trans  &trans  &trans  &trans    &kp LG(V)  &kp LG(LEFT)  &kp LG(DOWN)  &kp LG(UP) &kp LG(RIGHT)   &trans
+ &trans     &trans    &trans    &trans     &trans            &trans  &trans  &trans  &trans  &trans  &trans                  &kp LG(Z)        &trans     &trans  &kp LS(LG(Z))   &trans
+            >;
+        };
+
         Layer_Number {
             bindings = <
-&trans         &trans     &trans  &trans  &trans                                                                          &trans           &trans         &trans          &kp F11   &kp F12
+&trans         &trans     &trans  &trans  &trans                                                                          &trans           &trans        &trans          &kp F11   &kp F12
 &trans         &trans     &trans  &trans  &trans  &trans                                                          &trans &kp KP_NUM  &kp KP_EQUAL  &kp KP_SLASH  &kp KP_MULTIPLY    &trans
 &trans         &trans     &trans  &trans  &trans  &trans                                                          &trans  &kp KP_N7     &kp KP_N8     &kp KP_N9     &kp KP_MINUS    &trans
 &trans         &trans     &trans  &trans  &trans  &trans                                                     &kp PERCENT  &kp KP_N4     &kp KP_N5     &kp KP_N6      &kp KP_PLUS    &trans
@@ -557,6 +664,7 @@
 &magic L_M 0   &trans     &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans                 &kp KP_N0     &kp KP_N0    &kp KP_DOT     &kp KP_ENTER    &trans
             >;
         };
+
 
         Layer_Magic {
             bindings = <
@@ -569,27 +677,48 @@
             >;
         };
 
-        Layer_Arrows {
+        Layer_Symbols_Left_Temp {
             bindings = <
- &trans     &trans    &trans    &trans  &trans                                                                              &trans      &trans         &trans  &trans   &trans
- &trans     &trans    &trans    &trans  &trans  &trans                                                        &trans        &trans      &trans         &trans  &trans   &trans
- &trans     &trans    &trans    &trans  &trans  &trans                                                        &trans &kp LA(LEFT) &kp LA(DOWN) &kp LA(UP) &kp LA(RIGHT) &trans
- &trans  &kp LSHFT  &kp LALT  &kp LGUI  &trans  &trans                                                      &trans        &kp LEFT    &kp DOWN       &kp UP &kp RIGHT   &trans
- &trans     &trans    &trans    &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans        &trans &kp LG(LEFT) &kp LG(DOWN) &kp LG(UP) &kp LG(RIGHT) &trans
- &trans     &trans    &trans    &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans                      &trans      &trans         &trans  &trans   &trans
+&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans
             >;
         };
 
-        Layer_Symbols {
+        Layer_Symbols_Left_Lock {
             bindings = <
- &trans      &trans      &trans      &trans      &trans                                                                               &trans        &trans         &trans        &trans  &trans
- &trans      &trans      &trans      &trans      &trans         &trans                                                  &trans        &trans        &trans         &trans        &trans  &trans
- &trans      &trans      &trans      &trans      &trans         &trans                                                  &trans  &kp LS(LBKT)  &kp LS(RBKT)        &kp DQT       &kp SQT  &trans
- &trans  &kp LS(N5)  &kp LS(N6)  &kp LS(N7)  &kp LS(N8)  &kp LS(GRAVE)                                                  &trans      &kp LPAR      &kp RPAR  &kp LS(MINUS)     &kp EQUAL  &trans
- &trans  &kp LS(N1)  &kp LS(N2)  &kp LS(N3)  &kp LS(N4)      &kp GRAVE  &trans  &trans  &trans  &trans  &trans  &trans  &trans      &kp LBKT      &kp RBKT      &kp MINUS  &kp LS(PLUS)  &trans
- &trans      &trans      &trans      &trans      &trans                 &trans  &trans  &trans  &trans  &trans  &trans                &trans        &trans         &trans        &trans  &trans
+&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans
             >;
         };
 
+        Layer_Symbols_Right_Temp {
+            bindings = <
+&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        Layer_Symbols_Right_Lock {
+            bindings = <
+&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans
+            >;
+        };
     };
 };
