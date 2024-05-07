@@ -23,15 +23,15 @@
 /* Automatically generated layer name #define */
 #define L_B 0
 #define L_C 1
-#define L_SL 2
-#define L_SR 3
-#define L_A 4
-#define L_N 5
-#define L_M 6
-#define L_SL_T 7
-#define L_SL_L 8
-#define L_SR_T 9
-#define L_SR_L 10
+#define L_SL_T 2
+#define L_SL_L 3
+#define L_SR_T 4
+#define L_SR_L 5
+#define L_SL 6
+#define L_SR 7
+#define L_A 8
+#define L_N 9
+#define L_M 10
 
 #define HRM_TAPPING_TERM 200
 #define HRM_QUICK_TAP 300
@@ -42,43 +42,7 @@
  * This also means that we want magic to be (near) last.
  */
 
-
-/* To deal with the situation where there is no Lower layer, to keep &lower happy */
-#ifndef L_N
-#define L_N 0
-#endif
-
 /* Custom Device-tree */
-
-
-
-/* Glove80 system behavior & macros */
-/ {
-    behaviors {
-        // For the "layer" key, it'd nice to be able to use it as either a shift or a toggle.
-        // Configure it as a tap dance, so the first tap (or hold) is a &mo and the second tap is a &to
-        lower: lower {
-            compatible = "zmk,behavior-tap-dance";
-            label = "LAYER_TAP_DANCE";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&mo L_N>, <&to L_N>;
-        };
-    };
-};
-
-/ {
-    macros {
-        rgb_ug_status_macro: rgb_ug_status_macro {
-            label = "RGB_UG_STATUS";
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&rgb_ug RGB_STATUS>;
-        };
-    };
-};
-
 
 / {
 #ifdef BT_DISC_CMD
@@ -182,19 +146,6 @@
         };
     };
 #endif
-};
-
-/ {
-    behaviors {
-        magic: magic {
-            compatible = "zmk,behavior-hold-tap";
-            label = "MAGIC_HOLD_TAP";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <200>;
-            bindings = <&mo>, <&rgb_ug_status_macro>;
-        };
-    };
 };
 
 /* #define for key positions */
@@ -325,6 +276,15 @@
                          70 53     56 73                 \
                           71 54   55 72
 
+
+    magic: magic {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MAGIC_HOLD_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&rgb_ug_status_macro>;
+        };
 
 /*
  * hold-tap behaviors:
@@ -570,6 +530,13 @@
                 ;
         };
 
+        rgb_ug_status_macro: rgb_ug_status_macro {
+            label = "RGB_UG_STATUS";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&rgb_ug RGB_STATUS>;
+        };
     };
 };
 
@@ -623,6 +590,50 @@
             >;
         };
 
+         Layer_Symbols_Left_Temp {
+            bindings = <
+&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans   &trans  &trans   &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans   &trans  &trans   &trans  &trans   &trans            &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        Layer_Symbols_Left_Lock {
+            bindings = <
+&trans   &trans  &trans  &trans  &trans                                                                       &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans   &trans  &trans   &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans   &trans  &trans   &trans  &trans   &trans             &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        Layer_Symbols_Right_Temp {
+            bindings = <
+&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans  &trans  &trans   &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
+        Layer_Symbols_Right_Lock {
+            bindings = <
+&trans   &trans  &trans  &trans  &trans                                                                       &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans   &trans  &trans   &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans  &trans  &trans  &trans          &trans   &trans  &trans   &trans  &trans   &trans            &trans  &trans  &trans  &trans  &trans
+            >;
+        };
+
         Layer_Symbols_Left {
             bindings = <
  &trans               &trans      &trans         &trans       &trans                                                                                     &trans        &trans        &trans     &trans  &trans
@@ -667,7 +678,6 @@
             >;
         };
 
-
         Layer_Magic {
             bindings = <
   &bt BT_CLR            &none            &none            &none            &none                                                                                  &none   &none   &none   &none  &bt BT_CLR_ALL
@@ -675,51 +685,7 @@
        &none  &rgb_ug RGB_SPI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG                                                         &none   &none   &none   &none   &none           &none
  &bootloader  &rgb_ug RGB_SPD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF                                                         &none   &none   &none   &none   &none     &bootloader
   &sys_reset            &none            &none            &none            &none            &none   &bt_2   &bt_3         &none   &none   &none   &none   &none   &none   &none   &none   &none      &sys_reset
-       &none            &none            &none            &none            &none                    &bt_0   &bt_1  &out OUT_USB   &none   &none   &none           &none   &none   &none   &none           &none
-            >;
-        };
-
-        Layer_Symbols_Left_Temp {
-            bindings = <
-&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans   &trans  &trans   &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans          &to L_B  &trans  &trans   &trans  &trans  &to L_B            &trans  &trans  &trans  &trans  &trans
-            >;
-        };
-
-        Layer_Symbols_Left_Lock {
-            bindings = <
-&trans   &trans  &trans  &trans  &trans                                                                       &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans   &trans  &trans   &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans          &to L_B  &trans  &trans   &trans  &trans  &to L_B            &trans  &trans  &trans  &trans  &trans
-            >;
-        };
-
-        Layer_Symbols_Right_Temp {
-            bindings = <
-&trans   &trans  &trans  &trans  &trans                                                                     &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                     &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans          &to L_B  &trans  &trans   &trans  &trans  &to L_B            &trans  &trans  &trans  &trans  &trans
-            >;
-        };
-
-        Layer_Symbols_Right_Lock {
-            bindings = <
-&trans   &trans  &trans  &trans  &trans                                                                       &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans                                                       &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans  &trans  &trans   &trans  &trans   &trans  &trans   &trans    &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans  &trans  &trans  &trans          &to L_B  &trans  &trans   &trans  &trans  &to L_B            &trans  &trans  &trans  &trans  &trans
+       &none            &bt_select_0   &none            &none            &none                    &bt_0   &bt_1  &out OUT_USB   &none   &none   &none           &none   &none   &none   &none           &none
             >;
         };
     };
