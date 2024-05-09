@@ -362,6 +362,18 @@
         bindings = <&mo>, <&bcksp_del>;
     };
 
+    r_hrm_semi: right_hrm_semi_modmorph {
+        compatible = "zmk,behavior-hold-tap";
+        flavor = "balanced";
+        hold-trigger-key-positions = <LEFT_HAND_KEYS THUMB_KEYS>;
+        hold-trigger-on-release;
+        tapping-term-ms = <HRM_TAPPING_TERM>;
+        quick-tap-ms = <HRM_QUICK_TAP>;
+        require-prior-idle-ms = <50>;
+        #binding-cells = <2>;
+        // bindings = <&kp>, <&kp>;
+        bindings = <&kp>, <&sw_semi>;
+    };
 
     // &mo to layer on hold, sticky layer on tap
     mo_st: mo_sticky_layer {
@@ -436,6 +448,13 @@
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
         bindings = <&kp BSPC>, <&kp DEL>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
+    sw_semi: colon_semicolon_on_shift {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp LS(SEMI)>, <&kp SEMI>;
         mods = <(MOD_LSFT|MOD_RSFT)>;
     };
 
@@ -570,12 +589,12 @@
 
         Layer_Base {
             bindings = <
-&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                                    &m_f6         &m_f7          &m_f8              &m_f9     &m_f10
-&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                                           &kp N6          &kp N7        &kp N8         &kp N9             &kp N0  &kp MINUS
-&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                            &kp Y           &kp U         &kp I          &kp O              &kp P  &kp EQUAL
-&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                            &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm LCTRL SEMI    &kp SQT
-&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B       &mmt_l L_A  TAB  &mmt_l L_N GRAVE  &mo_tog L_N L_N       &kp LGUI  &kp RCTRL        &kp LG(SPACE)    &kp N           &kp M     &kp COMMA        &kp DOT           &kp FSLH   &kp BSLH
-&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END           &mmt_l_bsd L_SR_T 0      &kp LA(BSPC)     &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_SL_T SPACE                 &kp LEFT      &kp DOWN         &kp UP          &kp RIGHT     &l_tog
+&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                                    &m_f6         &m_f7          &m_f8                &m_f9     &m_f10
+&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                                           &kp N6          &kp N7        &kp N8         &kp N9               &kp N0  &kp MINUS
+&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                            &kp Y           &kp U         &kp I          &kp O                &kp P  &kp EQUAL
+&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                            &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm_semi LCTRL 0    &kp SQT
+&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B       &mmt_l L_A  TAB  &mmt_l L_N GRAVE  &mo_tog L_N L_N       &kp LGUI  &kp RCTRL        &kp LG(SPACE)    &kp N           &kp M     &kp COMMA        &kp DOT             &kp FSLH   &kp BSLH
+&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END           &mmt_l_bsd L_SR_T 0      &kp LA(BSPC)     &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_SL_T SPACE                 &kp LEFT      &kp DOWN         &kp UP            &kp RIGHT     &l_tog
             >;
         };
 
@@ -583,7 +602,7 @@
             bindings = <
  &trans          &trans         &trans         &trans           &trans                                                                            &trans         &trans         &trans          &trans  &trans
  &trans          &trans         &trans         &trans           &trans  &trans                                                    &trans          &trans         &trans         &trans          &trans  &trans
- &trans           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &kp SEMI  &trans
+ &trans           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &sw_semi  &trans
  &trans  &l_hrm LCTRL A  &l_hrm LALT R  &l_hrm LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm LSHFT N  &r_hrm LGUI E  &r_hrm LALT I  &r_hrm LCTRL O  &trans
  &trans          &trans         &trans         &trans           &kp D   &kp V    &trans  &trans  &trans  &trans  &trans  &trans    &kp K           &kp H      &kp COMMA        &kp DOT        &kp FSLH  &trans
  &trans          &trans         &trans         &trans           &trans           &trans  &trans  &trans  &trans  &trans  &trans                   &trans         &trans         &trans          &trans  &trans
@@ -650,7 +669,7 @@
  &trans     &trans    &trans    &trans      &trans                                                                                &trans       &trans         &trans         &trans   &trans
  &trans     &trans    &trans    &trans      &trans   &trans                                                         &trans        &trans       &trans         &trans         &trans   &trans
  &trans     &trans    &trans    &trans      &trans   &trans                                                         &trans  &kp LS(LBKT)  &kp LS(RBKT)     &kp LG(Z)  &kp LG(LS(Z))   &trans
- &trans  &kp LCTRL  &kp LALT   &kp LGUI  &kp LSHFT   &trans                                                         &trans      &kp LPAR      &kp RPAR  &kp LS(SEMI)       &kp SEMI   &trans
+ &trans  &kp LCTRL  &kp LALT   &kp LGUI  &kp LSHFT   &trans                                                         &trans      &kp LPAR      &kp RPAR      &kp SEMI   &kp LS(SEMI)   &trans
  &trans     &trans  &kp BSPC   &tog L_SL_L   &tog L_SR_L      &trans  &kp BSPC  &trans  &trans  &trans  &trans      &trans        &trans      &kp LBKT      &kp RBKT      &kp SPACE   &trans
  &trans     &trans    &trans    &trans      &trans           &to L_B  &trans    &trans  &trans  &trans  &to L_B                   &trans        &trans        &trans         &trans   &trans
             >;
