@@ -332,7 +332,6 @@
         flavor = "balanced";
         hold-trigger-key-positions = <LEFT_HAND_KEYS>;
         tapping-term-ms = <225>;
-        quick-tap-ms = <175>;
         require-prior-idle-ms = <50>;
         #binding-cells = <2>;
         bindings = <&mo>, <&kp>;
@@ -350,6 +349,10 @@
         bindings = <&mo>, <&kp>;
     };
 
+    /*
+     * These next two behaviors allow me to have a hrm when held,
+     * but some other kind of modmorph / custom behavior when pressed.
+    */
     mmt_l_bsd: my_mod_tap_left_backspace_shift_delete {
         // mod tap that triggers a backspace-delete mod morph on tap
         compatible = "zmk,behavior-hold-tap";
@@ -371,8 +374,7 @@
         quick-tap-ms = <HRM_QUICK_TAP>;
         require-prior-idle-ms = <50>;
         #binding-cells = <2>;
-        // bindings = <&kp>, <&kp>;
-        bindings = <&kp>, <&sw_semi>;
+        bindings = <&kp>, <&semi_mm>;
     };
 
     // &mo to layer on hold, sticky layer on tap
@@ -451,11 +453,32 @@
         mods = <(MOD_LSFT|MOD_RSFT)>;
     };
 
-    sw_semi: colon_semicolon_on_shift {
+
+    /*
+     * These 3 mods morphs are required to get this behavior on the semicolon key:
+     * - colon when pressed
+     * - semicolon when shifted
+     * - semi + mods when any other combination of mods is held
+    */
+    __semi_mm: __semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&kp LS(SEMI)>, <&kp SEMI>;
-        mods = <(MOD_LSFT|MOD_RSFT)>;
+        bindings = <&kp LS(LA(SEMI))>, <&kp LC(LA(LS(SEMI)))>;
+        mods = <(MOD_LCTL | MOD_RCTL)>;
+    };
+
+    _semi_mm: _semicolon_mod_morph {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp SEMI>, <&__semi_mm>;
+        mods = <(MOD_LALT | MOD_RALT)>;
+    };
+
+    semi_mm: semicolon_mod_morph {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp LS(SEMI)>, <&_semi_mm>;
+        mods = <(MOD_LSFT | MOD_RSFT)>;
     };
 
     m_f1: media_f1_key {
@@ -589,12 +612,12 @@
 
         Layer_Base {
             bindings = <
-&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                                    &m_f6         &m_f7          &m_f8                &m_f9     &m_f10
-&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                                           &kp N6          &kp N7        &kp N8         &kp N9               &kp N0  &kp MINUS
-&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                            &kp Y           &kp U         &kp I          &kp O                &kp P  &kp EQUAL
-&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                            &kp H  &r_hrm LSHFT J &r_hrm LGUI K  &r_hrm LALT L  &r_hrm_semi LCTRL 0    &kp SQT
-&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B       &mmt_l L_A  TAB  &mmt_l L_N GRAVE  &mo_tog L_N L_N       &kp LGUI  &kp RCTRL        &kp LG(SPACE)    &kp N           &kp M     &kp COMMA        &kp DOT             &kp FSLH   &kp BSLH
-&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END           &mmt_l_bsd L_SR_T 0      &kp LA(BSPC)     &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_SL_T SPACE                 &kp LEFT      &kp DOWN         &kp UP            &kp RIGHT     &l_tog
+&m_f1                    &m_f2         &kp F3         &kp F4          &kp F5                                                                                                                                        &m_f6         &m_f7          &m_f8                &m_f9     &m_f10
+&kp GRAVE               &kp N1         &kp N2         &kp N3          &kp N4  &kp N5                                                                                                               &kp N6          &kp N7        &kp N8         &kp N9               &kp N0  &kp MINUS
+&mt MEH TAB              &kp Q          &kp W          &kp E           &kp R   &kp T                                                                                                                &kp Y           &kp U         &kp I          &kp O                &kp P  &kp EQUAL
+&esc_fq L_A 0   &l_hrm LCTRL A  &l_hrm LALT S  &l_hrm LGUI D  &l_hrm LSHFT F   &kp G                                                                                                                &kp H  &r_hrm RSHFT J &r_hrm RGUI K  &r_hrm RALT L  &r_hrm_semi RCTRL 0    &kp SQT
+&f_shft LSHFT 0          &kp Z          &kp X          &kp C           &kp V   &kp B       &mmt_l L_N  TAB             &kp GRAVE  &mo_tog L_N L_N       &kp LGUI  &kp RCTRL        &kp LG(SPACE)    &kp N           &kp M     &kp COMMA        &kp DOT             &kp FSLH   &kp BSLH
+&magic L_M 0          &kp HOME      &kp PG_DN      &kp PG_UP         &kp END           &mmt_l_bsd L_SR_T 0  &mmt_l L_A  LA(BSPC)     &kp LG(BSPC)  &kp LG(SPACE)    &kp RET  &mmt_r L_SL_T SPACE                 &kp LEFT      &kp DOWN         &kp UP            &kp RIGHT     &l_tog
             >;
         };
 
@@ -602,8 +625,8 @@
             bindings = <
  &trans          &trans         &trans         &trans           &trans                                                                            &trans         &trans         &trans          &trans  &trans
  &trans          &trans         &trans         &trans           &trans  &trans                                                    &trans          &trans         &trans         &trans          &trans  &trans
- &trans           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &sw_semi  &trans
- &trans  &l_hrm LCTRL A  &l_hrm LALT R  &l_hrm LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm LSHFT N  &r_hrm LGUI E  &r_hrm LALT I  &r_hrm LCTRL O  &trans
+ &trans           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &semi_mm  &trans
+ &trans  &l_hrm LCTRL A  &l_hrm LALT R  &l_hrm LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm RSHFT N  &r_hrm RGUI E  &r_hrm RALT I  &r_hrm RCTRL O  &trans
  &trans          &trans         &trans         &trans           &kp D   &kp V    &trans  &trans  &trans  &trans  &trans  &trans    &kp K           &kp H      &kp COMMA        &kp DOT        &kp FSLH  &trans
  &trans          &trans         &trans         &trans           &trans           &trans  &trans  &trans  &trans  &trans  &trans                   &trans         &trans         &trans          &trans  &trans
             >;
