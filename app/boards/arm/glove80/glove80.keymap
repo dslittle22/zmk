@@ -425,32 +425,43 @@
             bindings = <&kp LA(N6)>, <&tog L_C>;
      };
 
-    // this is basically just a hrm, but the hold binding is the qw_sct macro
-    // h_q_l: hrm_to_qwerty_layer_left {
-    //         compatible = "zmk,behavior-hold-tap";
-    //         hold-trigger-key-positions = <RIGHT_HAND_KEYS THUMB_KEYS>;
-    //         #binding-cells = <2>;
-    //         flavor = "balanced";
-    //         tapping-term-ms = <200>;
-    //         require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
-    //         quick-tap-ms = <400>; // ms for tap key to start repeating
-    //         tapping-term-ms = <225>; // ms for same-hand HRM to work
-    //         hold-trigger-on-release; // wait for other home row mods
-    //         bindings = <&qw_sct>, <&kp>;
-    //  };
+    meh_q: meh_qwerty_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
+            quick-tap-ms = <400>; // ms for tap key to start repeating
+            hold-trigger-on-release; // wait for other home row mods
+            bindings = <&qw_sct>, <&kp>;
+    };
 
-    //   h_q_r: hrm_to_qwerty_layer_right {
-    //         compatible = "zmk,behavior-hold-tap";
-    //         hold-trigger-key-positions = <LEFT_HAND_KEYS THUMB_KEYS>;
-    //         #binding-cells = <2>;
-    //         flavor = "balanced";
-    //         tapping-term-ms = <200>;
-    //         require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
-    //         quick-tap-ms = <400>; // ms for tap key to start repeating
-    //         tapping-term-ms = <225>; // ms for same-hand HRM to work
-    //         hold-trigger-on-release; // wait for other home row mods
-    //         bindings = <&qw_sct>, <&kp>;
-    //  };
+    // this is basically just a hrm, but the hold binding is the qw_sct macro
+    h_q_l: hrm_to_qwerty_layer_left {
+            compatible = "zmk,behavior-hold-tap";
+            hold-trigger-key-positions = <RIGHT_HAND_KEYS THUMB_KEYS>;
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
+            quick-tap-ms = <400>; // ms for tap key to start repeating
+            tapping-term-ms = <225>; // ms for same-hand HRM to work
+            hold-trigger-on-release; // wait for other home row mods
+            bindings = <&qw_sct>, <&kp>;
+     };
+
+      h_q_r: hrm_to_qwerty_layer_right {
+            compatible = "zmk,behavior-hold-tap";
+            hold-trigger-key-positions = <LEFT_HAND_KEYS THUMB_KEYS>;
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            require-prior-idle-ms = <50>; // ms after typing to allow HRM- reduces flakiness
+            quick-tap-ms = <400>; // ms for tap key to start repeating
+            tapping-term-ms = <225>; // ms for same-hand HRM to work
+            hold-trigger-on-release; // wait for other home row mods
+            bindings = <&qw_sct>, <&kp>;
+     };
 
     esc_fq_mm: escape_force_quit_mod_morph {
         compatible = "zmk,behavior-mod-morph";
@@ -574,7 +585,7 @@
     // 1. key press the binding param (a HRM)
     // 2. toggle (off) the colemak layer
     // -- stay in this state while macro key is held, and on release:
-    // 3. release the HRM keyasdfasdfdxczxcvzzzzss
+    // 3. release the HRM
     // 4. re-toggle colemak layer
         qw_sct: qwerty_layer_shortcut {
             label = "qw_sct";
@@ -695,8 +706,8 @@
             bindings = <
  &trans          &trans         &trans         &trans           &trans                                                                            &trans         &trans         &trans          &trans  &trans
  &trans          &trans         &trans         &trans           &trans  &trans                                                    &trans          &trans         &trans         &trans          &trans  &trans
- &trans           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &semi_mm  &trans
- &trans  &l_hrm LCTRL A  &l_hrm LALT R  &l_hrm LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm RSHFT N  &r_hrm RGUI E  &r_hrm RALT I  &r_hrm RCTRL O  &trans
+ &meh_q MEH TAB           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &semi_mm  &trans
+ &trans  &h_q_l LCTRL A  &h_q_l LALT R  &h_q_l LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm RSHFT N  &h_q_r RGUI E  &h_q_r RALT I  &h_q_r RCTRL O  &trans
  &trans          &trans         &trans         &trans           &kp D   &kp V    &trans  &trans  &trans  &trans  &trans  &trans    &kp K           &kp H      &kp COMMA        &kp DOT        &kp FSLH  &trans
  &trans          &trans         &trans         &trans           &trans           &trans  &trans  &trans  &trans  &trans  &trans                   &trans         &trans         &trans          &trans  &trans
             >;
