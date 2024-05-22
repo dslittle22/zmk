@@ -707,7 +707,7 @@
  &trans          &trans         &trans         &trans           &trans                                                                            &trans         &trans         &trans          &trans  &trans
  &trans          &trans         &trans         &trans           &trans  &trans                                                    &trans          &trans         &trans         &trans          &trans  &trans
  &meh_q MEH TAB           &kp Q          &kp W          &kp F           &kp P   &kp B                                                      &kp J           &kp L          &kp U          &kp Y        &semi_mm  &trans
- &trans  &h_q_l LCTRL A  &h_q_l LALT R  &h_q_l LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm RSHFT N  &h_q_r RGUI E  &h_q_r RALT I  &h_q_r RCTRL O  &trans
+ &trans  &l_hrm LCTRL A  &l_hrm LALT R  &l_hrm LGUI S  &l_hrm LSHFT T   &kp G                                                      &kp M  &r_hrm RSHFT N  &r_hrm RGUI E  &r_hrm RALT I  &r_hrm RCTRL O  &trans
  &trans          &trans         &trans         &trans           &kp D   &kp V    &trans  &trans  &trans  &trans  &trans  &trans    &kp K           &kp H      &kp COMMA        &kp DOT        &kp FSLH  &trans
  &trans          &trans         &trans         &trans           &trans           &trans  &trans  &trans  &trans  &trans  &trans                   &trans         &trans         &trans          &trans  &trans
             >;
