@@ -492,24 +492,31 @@
      * - semicolon when shifted
      * - semi + mods when any other combination of mods is held
     */
+    ___semi_mm: ___semicolon_mod_morph {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp LS(SEMI)>, <&kp LC(SEMI)>;
+        mods = <(MOD_LCTL | MOD_RCTL)>;
+    };
+
     __semi_mm: __semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&kp LS(LA(SEMI))>, <&kp LC(LA(LS(SEMI)))>;
-        mods = <(MOD_LCTL | MOD_RCTL)>;
+        bindings = <&___semi_mm>, <&kp LA(SEMI)>;
+        mods = <(MOD_LALT | MOD_RALT)>;
     };
 
     _semi_mm: _semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&kp SEMI>, <&__semi_mm>;
-        mods = <(MOD_LALT | MOD_RALT)>;
+        bindings = <&__semi_mm>, <&kp LG(SEMI)>;
+        mods = <(MOD_LGUI | MOD_RGUI)>;
     };
 
     semi_mm: semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&kp LS(SEMI)>, <&_semi_mm>;
+        bindings = <&_semi_mm>, <&kp SEMI>;
         mods = <(MOD_LSFT | MOD_RSFT)>;
     };
 
@@ -759,12 +766,12 @@
 
         Layer_Symbols_Left {
             bindings = <
- &trans               &trans      &trans         &trans       &trans                                                                                     &trans        &trans        &trans     &trans  &trans
- &trans               &trans      &trans         &trans       &trans      &trans                                                           &trans        &trans        &trans        &trans     &trans  &trans
- &kp LS(N6)       &kp LS(N2)  &kp LS(N3)  &kp LS(MINUS)   &kp LS(N4)    &kp LS(N8)                                                         &trans        &trans        &trans        &trans     &trans  &trans
- &kp LS(N7)       &kp LS(N1)   &kp GRAVE        &kp SQT      &kp DQT  &kp LS(FSLH)                                                         &trans      &kp RSFT      &kp RGUI      &kp RALT  &kp RCTRL  &trans
- &kp LS(BSLH)  &kp LS(COMMA)   &kp MINUS      &kp EQUAL  &kp LS(DOT)      &kp BSLH     &trans  &kp SPACE  &trans  &trans  &trans  &trans   &trans   &tog L_SL_L   &tog L_SR_L      &kp SPACE    &trans  &trans
- &trans        &kp LS(GRAVE)  &kp LS(N5)       &kp PLUS     &kp FSLH                  &to L_B     &trans  &trans  &trans  &trans  &to L_B                &trans        &trans         &trans    &trans  &trans
+ &trans              &trans      &trans         &trans         &trans                                                                                     &trans        &trans        &trans     &trans  &trans
+ &trans              &trans      &trans         &trans         &trans        &trans                                                         &trans        &trans        &trans        &trans     &trans  &trans
+ &kp LS(N6)      &kp LS(N2)  &kp LS(N7)   &kp LS(BSLH)  &kp LS(MINUS)    &kp LS(N4)                                                         &trans        &trans        &trans        &trans     &trans  &trans
+ &kp LS(N3)      &kp LS(N1)   &kp GRAVE        &kp SQT        &kp DQT  &kp LS(FSLH)                                                         &trans      &kp RSFT      &kp RGUI      &kp RALT  &kp RCTRL  &trans
+ &kp LS(N5)   &kp LS(COMMA)   &kp MINUS      &kp EQUAL    &kp LS(DOT)      &kp BSLH     &trans  &kp SPACE  &trans  &trans  &trans  &trans   &trans   &tog L_SL_L   &tog L_SR_L      &kp SPACE    &trans  &trans
+ &trans       &kp LS(GRAVE)  &kp LS(N8)       &kp PLUS       &kp FSLH                  &to L_B     &trans  &trans  &trans  &trans  &to L_B                &trans        &trans         &trans    &trans  &trans
             >;
         };
 
