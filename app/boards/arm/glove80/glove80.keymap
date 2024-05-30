@@ -495,29 +495,43 @@
     ___semi_mm: ___semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&kp LS(SEMI)>, <&kp LC(SEMI)>;
+        bindings = <&kp LS(LA(SEMI))>, <&kp LC(LA(LS(SEMI)))>;
         mods = <(MOD_LCTL | MOD_RCTL)>;
     };
 
     __semi_mm: __semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&___semi_mm>, <&kp LA(SEMI)>;
+        bindings = <&kp SEMI>, <&___semi_mm>;
+        mods = <(MOD_LALT | MOD_RALT)>;
+    };
+
+    ctrl_semi_mm: ctrl_semicolon_mod_morph {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&kp LS(SEMI)>, <&kp LC(SEMI)>;
+        mods = <(MOD_LCTL | MOD_RCTL)>;
+    };
+
+    alt_semi_mm: alt_semicolon_mod_morph {
+        compatible = "zmk,behavior-mod-morph";
+        #binding-cells = <0>;
+        bindings = <&ctrl_semi_mm>, <&kp LA(SEMI)>;
         mods = <(MOD_LALT | MOD_RALT)>;
     };
 
     _semi_mm: _semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&__semi_mm>, <&kp LG(SEMI)>;
-        mods = <(MOD_LGUI | MOD_RGUI)>;
+        bindings = <&alt_semi_mm>, <&__semi_mm>;
+        mods = <(MOD_LSFT | MOD_RSFT)>;
     };
 
     semi_mm: semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&_semi_mm>, <&kp SEMI>;
-        mods = <(MOD_LSFT | MOD_RSFT)>;
+        bindings = <&_semi_mm>, <&kp LG(SEMI)>;
+        mods = <(MOD_LGUI | MOD_RGUI)>;
     };
 
     m_f1: media_f1_key {
