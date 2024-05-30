@@ -485,27 +485,26 @@
         mods = <(MOD_LSFT|MOD_RSFT)>;
     };
 
-
-    /*
-     * These 3 mods morphs are required to get this behavior on the semicolon key:
-     * - colon when pressed
-     * - semicolon when shifted
-     * - semi + mods when any other combination of mods is held
-    */
-    ___semi_mm: ___semicolon_mod_morph {
+    // if holding shift, alt, and ctrl, output meh(semi)
+    // else if just holding shift and alt, output LS(LA(SEMI))
+    sa_semi_mm: sa_semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
         bindings = <&kp LS(LA(SEMI))>, <&kp LC(LA(LS(SEMI)))>;
         mods = <(MOD_LCTL | MOD_RCTL)>;
     };
 
-    __semi_mm: __semicolon_mod_morph {
+    // if holding shift and alt, check if holding control
+    // if just holding shift, output semicolon
+    s_semi_mm: shifted_semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&kp SEMI>, <&___semi_mm>;
+        bindings = <&kp SEMI>, <&sa_semi_mm>;
         mods = <(MOD_LALT | MOD_RALT)>;
     };
 
+    // if holding ctrl (and not gui, shift, or alt), LC(SEMI)
+    // otherwise, output colon, not semi!
     ctrl_semi_mm: ctrl_semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
@@ -513,6 +512,8 @@
         mods = <(MOD_LCTL | MOD_RCTL)>;
     };
 
+    // if holding alt (and not gui or shift), LA(SEMI)
+    // otherwise check for ctrl
     alt_semi_mm: alt_semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
@@ -520,13 +521,16 @@
         mods = <(MOD_LALT | MOD_RALT)>;
     };
 
+    // if not shift (and not gui), check if holding alt
+    // if holding shift (and not gui), check if holding alt
     _semi_mm: _semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
-        bindings = <&alt_semi_mm>, <&__semi_mm>;
+        bindings = <&alt_semi_mm>, <&s_semi_mm>;
         mods = <(MOD_LSFT | MOD_RSFT)>;
     };
 
+    // if holding gui only, LG(SEMI)
     semi_mm: semicolon_mod_morph {
         compatible = "zmk,behavior-mod-morph";
         #binding-cells = <0>;
